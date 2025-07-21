@@ -1,0 +1,35 @@
+Add-Type -AssemblyName System.Windows.Forms
+
+# Variables para control de tiempos
+$lastMouseMove = Get-Date
+$lastDownKey = Get-Date
+$lastLeftKey = Get-Date
+
+while ($true) {
+    $now = Get-Date
+
+    # Cada 5 segundos mueve el ratón 10 pixeles a la derecha y vuelve a la posición original
+    if (($now - $lastMouseMove).TotalSeconds -ge 5) {
+        $pos = [System.Windows.Forms.Cursor]::Position
+        # Mueve el cursor 10 pixeles a la derecha
+        [System.Windows.Forms.Cursor]::Position = New-Object System.Drawing.Point ($pos.X + 10, $pos.Y)
+        Start-Sleep -Milliseconds 100
+        # Vuelve a la posición original
+        [System.Windows.Forms.Cursor]::Position = $pos
+        $lastMouseMove = $now
+    }
+
+    # Cada 10 segundos presiona tecla Flecha Abajo
+    if (($now - $lastDownKey).TotalSeconds -ge 10) {
+        [System.Windows.Forms.SendKeys]::SendWait("{DOWN}")
+        $lastDownKey = $now
+    }
+
+    # Cada 11 segundos presiona tecla Flecha Izquierda
+    if (($now - $lastLeftKey).TotalSeconds -ge 11) {
+        [System.Windows.Forms.SendKeys]::SendWait("{LEFT}")
+        $lastLeftKey = $now
+    }
+
+    Start-Sleep -Milliseconds 200
+}
