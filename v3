@@ -1,0 +1,43 @@
+Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public class User32 {
+    [DllImport("user32.dll")]
+    public static extern bool SetCursorPos(int X, int Y);
+    [DllImport("user32.dll")]
+    public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
+}
+"@
+
+# Teclas de flechas y borrar
+$keys = @{
+    "UP"    = 0x26
+    "DOWN"  = 0x28
+    "LEFT"  = 0x25
+    "RIGHT" = 0x27
+    "DEL"   = 0x2E
+}
+
+function Send-Key($keyName) {
+    $vk = $keys[$keyName]
+    [User32]::keybd_event($vk,0,0,0)       # Key down
+    Start-Sleep -Milliseconds 100
+    [User32]::keybd_event($vk,0,2,0)       # Key up
+}
+
+function Move-RandomMouse {
+    $pos = [System.Windows.Forms.Cursor]::Position
+    $deltaX = Get-Random -Minimum -10 -Maximum 10
+    $deltaY = Get-Random -Minimum -10 -Maximum 10
+    [User32]::SetCursorPos($pos.X + $deltaX, $pos.Y + $deltaY)
+}
+
+Add-Type -AssemblyName System.Windows.Forms
+
+while ($true) {
+    Move-RandomMouse
+    Start-Sleep -Seconds (Get-Random -Minimum 4 -Maximum 9)
+    $key = (Get-Random -InputObject @("UP","DOWN","LEFT","RIGHT","DEL"))
+    Send-Key $key
+    Start-Sleep -Seconds (Get-Random -Minimum 5 -Maximum 9)
+}
