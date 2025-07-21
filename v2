@@ -1,0 +1,16 @@
+Add-Type -AssemblyName System.Windows.Forms
+
+# Variable para control de tiempo
+$lastDownKey = Get-Date
+
+while ($true) {
+    $now = Get-Date
+
+    # Cada 5 segundos presiona tecla Flecha Abajo
+    if (($now - $lastDownKey).TotalSeconds -ge 5) {
+        [System.Windows.Forms.SendKeys]::SendWait("{DOWN}")
+        $lastDownKey = $now
+    }
+
+    Start-Sleep -Milliseconds 200
+}
