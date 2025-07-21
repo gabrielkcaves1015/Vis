@@ -27,8 +27,8 @@ function Send-Key($keyName) {
 
 function Move-RandomMouse {
     $pos = [System.Windows.Forms.Cursor]::Position
-    $deltaX = Get-Random -Minimum -10 -Maximum 10
-    $deltaY = Get-Random -Minimum -10 -Maximum 10
+    $deltaX = Get-Random -Minimum -100 -Maximum 101
+    $deltaY = Get-Random -Minimum -100 -Maximum 101
     [User32]::SetCursorPos($pos.X + $deltaX, $pos.Y + $deltaY)
 }
 
